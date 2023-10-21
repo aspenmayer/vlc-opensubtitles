@@ -1,5 +1,5 @@
 --[[
-VLSub Extension for VLC media player 1.1 and 2.0
+VLC-OpenSubtitles Extension for VLC media player 1.1 and 2.0
 Copyright 2013 Guillaume Le Maout
 Authors:  Guillaume Le Maout
 Contact: 
@@ -86,24 +86,24 @@ local options = {
     int_dowload_manual =  'Manual download',
     int_display_code = 'Display language code in file name',
     int_remove_tag = 'Remove tags',
-    int_vlsub_work_dir = 'VLSub working directory',
+    int_VLC-OpenSubtitles_work_dir = 'VLC-OpenSubtitles working directory',
     int_os_username = 'Username',
     int_os_password = 'Password',
     int_help_mess =[[
       Download subtitles from 
-      <a href='http://www.opensubtitles.org/'>
-      opensubtitles.org
+      <a href='http://www.opensubtitles.com/'>
+      opensubtitles.com
       </a> and display them while watching a video.<br>
       <br>
       <b><u>Usage:</u></b><br>
       <br>
-      Start your video. If you use Vlsub witout playing a video 
+      Start your video. If you use VLC-OpenSubtitles witout playing a video 
       you will get a link to download the subtitles in your browser 
       but the subtitles won't be saved and loaded automatically.<br>
       <br>
       Choose the language for your subtitles and click on the 
       button corresponding to one of the two research methods 
-      provided by VLSub:<br>
+      provided by VLC-OpenSubtitles:<br>
       <br>
       <b>Method 1: Search by hash</b><br>
       It is recommended to try this method first, because it 
@@ -131,7 +131,7 @@ local options = {
       <a href='http://addons.videolan.org'>addons.videolan.org</a>.
       ]],
     int_no_support_mess = [[
-      <strong>VLSub is not working with Vlc 2.1.x on 
+      <strong>VLC-OpenSubtitles is not working with Vlc 2.1.x on 
       any platform</strong>
       because the lua "net" module needed to interact 
       with opensubtitles has been 
@@ -141,7 +141,7 @@ local options = {
       <br>
       <strong>On windows you have to install an older version 
       of Vlc (2.0.8 for example)</strong>
-      to use Vlsub:
+      to use VLC-OpenSubtitles:
       <br>
       <a target="_blank" rel="nofollow" 
       href="http://download.videolan.org/pub/videolan/vlc/2.0.8/">
@@ -321,8 +321,8 @@ local dlg = nil
 local input_table = {} -- General widget id reference
 local select_conf = {} -- Drop down widget / option table association 
 
-local app_name = "VLsub";
-local app_version = "0.10.2";
+local app_name = "VLC OpenSubtitles.com Downloader";
+local app_version = "0.0.1";
 local app_useragent = app_name.." "..app_version;
 
             --[[ VLC extension stuff ]]--
@@ -331,8 +331,8 @@ function descriptor()
   return { 
     title = app_useragent,
     version = app_version,
-    author = "exebetche",
-    url = 'http://www.opensubtitles.org/',
+    author = "exebetche+mureni",
+    url = 'http://www.opensubtitles.com',
     shortdesc = app_name;
     description = options.translation.int_descr,
     capabilities = {"menu", "input-listener" }
@@ -340,10 +340,10 @@ function descriptor()
 end
 
 function activate()
-  vlc.msg.dbg("[VLsub] Welcome")
+  vlc.msg.dbg("[VLC-OpenSubtitles] Welcome")
   
   if not check_config() then 
-  	vlc.msg.err("[VLsub] Unsupported VLC version")
+  	vlc.msg.err("[VLC-OpenSubtitles] Unsupported VLC version")
   	return false 
   end
   	
@@ -360,7 +360,7 @@ function close()
 end
 
 function deactivate()
-  vlc.msg.dbg("[VLsub] Bye bye!")
+  vlc.msg.dbg("[VLC-OpenSubtitles] Bye bye!")
   if dlg then
     dlg:hide() 
   end
@@ -468,15 +468,15 @@ function interface_config()
     if openSub.conf.os == "win" then
       dlg:add_label(
         "<a href='file:///"..openSub.conf.dirPath.."'>"..
-        lang["int_vlsub_work_dir"].."</a>", 1, 6, 2, 1)
+        lang["int_VLC-OpenSubtitles_work_dir"].."</a>", 1, 6, 2, 1)
     else
       dlg:add_label(
         "<a href='"..openSub.conf.dirPath.."'>"..
-        lang["int_vlsub_work_dir"].."</a>", 1, 6, 2, 1)
+        lang["int_VLC-OpenSubtitles_work_dir"].."</a>", 1, 6, 2, 1)
     end
   else
     dlg	:add_label(
-      lang["int_vlsub_work_dir"], 1, 6, 2, 1)
+      lang["int_VLC-OpenSubtitles_work_dir"], 1, 6, 2, 1)
   end
   
   input_table['dir_path'] = dlg:add_text_input(
@@ -583,7 +583,7 @@ function show_help()
 end
 
 function close_dlg()
-  vlc.msg.dbg("[VLSub] Closing dialog")
+  vlc.msg.dbg("[VLC-OpenSubtitles] Closing dialog")
 
   if dlg ~= nil then 
     --~ dlg:delete() -- Throw an error
@@ -680,11 +680,11 @@ function check_config()
     slash = "/"
   end
   
-  local path_generic = {"lua", "extensions", "userdata", "vlsub"}
+  local path_generic = {"lua", "extensions", "userdata", "VLC-OpenSubtitles"}
   local dirPath = slash..table.concat(path_generic, slash)
-  local filePath	= slash.."vlsub_conf.xml"
+  local filePath	= slash.."VLC-OpenSubtitles_conf.xml"
   local config_saved = false
-  sub_dir = slash.."vlsub_subtitles"
+  sub_dir = slash.."VLC-OpenSubtitles_subtitles"
   
   -- Check if config file path is stored in vlc config
   local other_dirs = {}
@@ -760,7 +760,7 @@ function check_config()
   end
   
   if openSub.conf.dirPath then
-    vlc.msg.dbg("[VLSub] Working directory: " ..
+    vlc.msg.dbg("[VLC-OpenSubtitles] Working directory: " ..
       (openSub.conf.dirPath or "not found"))
     
     openSub.conf.filePath = openSub.conf.dirPath..filePath 
@@ -769,19 +769,19 @@ function check_config()
     if config_saved 
     and file_exist(openSub.conf.filePath) then
       vlc.msg.dbg(
-        "[VLSub] Loading config file: "..openSub.conf.filePath)
+        "[VLC-OpenSubtitles] Loading config file: "..openSub.conf.filePath)
       load_config()
     else
-      vlc.msg.dbg("[VLSub] No config file")
+      vlc.msg.dbg("[VLC-OpenSubtitles] No config file")
       getenv_lang()
       config_saved = save_config()
       if not config_saved then
-        vlc.msg.dbg("[VLSub] Unable to save config")
+        vlc.msg.dbg("[VLC-OpenSubtitles] Unable to save config")
       end
     end
     
     -- Check presence of a translation file 
-    -- in "%vlsub_directory%/locale"
+    -- in "%VLC-OpenSubtitles_directory%/locale"
     -- Add translation files to available translation list
     local file_list = list_dir(openSub.conf.localePath)
     local translations_avail = openSub.conf.translations_avail
@@ -810,13 +810,13 @@ function check_config()
         slash..openSub.option.intLang..".xml"
       if file_exist(transl_file_path) then
         vlc.msg.dbg(
-          "[VLSub] Loading translation from file: "..
+          "[VLC-OpenSubtitles] Loading translation from file: "..
           transl_file_path)
         load_transl(transl_file_path)
       end
     end
   else
-    vlc.msg.dbg("[VLSub] Unable to find a suitable path"..
+    vlc.msg.dbg("[VLC-OpenSubtitles] Unable to find a suitable path"..
       "to save config, please set it manually")
   end
   
@@ -935,7 +935,7 @@ function apply_config()
   and openSub.conf.translations_avail[lg_sel] then
     local lg = openSub.conf.translations_avail[lg_sel][1]
     if not set_translation(lg) then
-      vlc.msg.err("[VLSub] Couldn't not set translation")
+      vlc.msg.err("[VLC-OpenSubtitles] Couldn't not set translation")
       return false
     end
     SetDownloadBehaviours()
@@ -1000,7 +1000,7 @@ function apply_config()
         end
         
         openSub.conf.filePath = openSub.conf.dirPath..
-          slash.."vlsub_conf.xml"
+          slash.."VLC-OpenSubtitles_conf.xml"
         openSub.conf.localePath = openSub.conf.dirPath..
           slash.."locale"
       else
@@ -1040,7 +1040,7 @@ function save_config()
   if openSub.conf.dirPath
   and openSub.conf.filePath then
     vlc.msg.dbg(
-      "[VLSub] Saving config file:  "..
+      "[VLC-OpenSubtitles] Saving config file:  "..
       openSub.conf.filePath)
     
     if file_touch(openSub.conf.filePath) then
@@ -1057,7 +1057,7 @@ function save_config()
     collectgarbage()
     return true
   else
-    vlc.msg.dbg("[VLSub] Unable fount a suitable path "..
+    vlc.msg.dbg("[VLC-OpenSubtitles] Unable fount a suitable path "..
       "to save config, please set it manually")
     setError(lang["mess_err_conf_access"])
     return false
@@ -1076,10 +1076,10 @@ function get_available_translations()
 -- Get all available translation files from the internet
 -- (drop previous direct download from github repo 
 -- causing error  with github https CA certficate on OS X an XP)
--- https://github.com/exebetche/vlsub/tree/master/locale
+-- https://github.com/exebetche/VLC-OpenSubtitles/tree/master/locale
 
   local translations_url = "http://addons.videolan.org/CONTENT/"..
-    "content-files/148752-vlsub_translations.xml"
+    "content-files/148752-VLC-OpenSubtitles_translations.xml"
   
   if input_table['intLangBut']:get_text() == lang["int_search_transl"] 
   then
@@ -1129,7 +1129,7 @@ function set_translation(lg)
       slash..lg..".xml") then
       local transl_file_path = openSub.conf.localePath..
       slash..lg..".xml"
-      vlc.msg.dbg("[VLSub] Loading translation from file: "..
+      vlc.msg.dbg("[VLC-OpenSubtitles] Loading translation from file: "..
         transl_file_path)
       load_transl(transl_file_path)
       apply_translation()
@@ -1141,7 +1141,7 @@ function set_translation(lg)
       end
 
       if not all_trsl or not all_trsl[lg] then
-        vlc.msg.dbg("[VLSub] Error, translation not found")
+        vlc.msg.dbg("[VLC-OpenSubtitles] Error, translation not found")
         return false
       end
       openSub.option.translation = all_trsl[lg]
@@ -1162,7 +1162,7 @@ openSub = {
   itemStore = nil,
   actionLabel = "",
   conf = {
-    url = "http://api.opensubtitles.org/xml-rpc",
+    url = "https://api.opensubtitles.com/api/v1",
     path = nil,
     HTTPVersion = "1.1",
     userAgentHTTP = app_useragent,
@@ -1198,16 +1198,19 @@ openSub = {
     sublanguageid = ""
   },
   request = function(methodName)
+    local apiEndpoint = openSub.methods[methodName].apiEndpoint
+    local httpCommand = openSub.methods[methodName].httpCommand
     local params = openSub.methods[methodName].params()
     local reqTable = openSub.getMethodBase(methodName, params)
-    local request = "<?xml version='1.0'?>"..dump_xml(reqTable)
-    local host, path = parse_url(openSub.conf.url)		
+    local request = dump_json(reqTable)
+    local host, path = parse_url(openSub.conf.url)
     local header = {
-      "POST "..path.." HTTP/"..openSub.conf.HTTPVersion, 
-      "Host: "..host, 
-      "User-Agent: "..openSub.conf.userAgentHTTP, 
-      "Content-Type: text/xml", 
-      "Content-Length: "..string.len(request),
+      httpCommand.." "..path.."/"..apiEndpoint.." HTTP/"..openSub.conf.HTTPVersion, 
+      -- "Host: "..host, 
+      "User-Agent: "..openSub.conf.userAgentHTTP,
+      "Content-Type: application/json",      
+      -- "Content-Length: "..string.len(request),
+      "Api-Key: "..openSub.options.os_apikey
       "",
       ""
     }
@@ -1217,7 +1220,7 @@ openSub = {
     local status, responseStr = http_req(host, 80, request)
     
     if status == 200 then 
-      response = parse_xmlrpc(responseStr)
+      response = parse_json(responseStr)
       
       if response then
         if response.status == "200 OK" then
@@ -1237,7 +1240,7 @@ openSub = {
       end
     elseif status == 401 then
       setError("Request unauthorized")
-      response = parse_xmlrpc(responseStr)
+      response = parse_json(responseStr)
       if openSub.session.token ~= response.token then
         setMessage("Session expired, retrying")
         openSub.session.token = response.token
@@ -1250,20 +1253,37 @@ openSub = {
     end
     
   end,
-  getMethodBase = function(methodName, param)
+  getMethodBase = function(methodName, param, apiEndpoint, httpCommand)
     if openSub.methods[methodName].methodName then
-      methodName = openSub.methods[methodName].methodName
+      methodName = openSub.methods[methodName].methodName            
+    end
+    if openSub.methods[methodName].apiEndpoint then
+      apiEndpoint = openSub.methods[methodName].apiEndpoint
+    else
+      setError("API Endpoint not defined for "..methodName..". Unable to process request.")
+      return false
+    end
+    if openSub.methods[methodName].httpCommand then
+      httpCommand = openSub.methods[methodName].httpCommand
+    else
+      setError("HTTP request type not defined for "..methodName..". Unable to process request.")
+      return false
     end
     
     local request = {
      methodCall={
       methodName=methodName,
-      params={ param=param }}}
+      params={ param=param },
+      apiEndpoint=apiEndpoint,
+      httpCommand=httpCommand
+    }}
     
     return request
   end,
   methods = {
     LogIn = {
+      apiEndpoint = "login",
+      httpCommand = "POST",
       params = function()
         openSub.actionLabel = lang["action_login"]
         return {
@@ -1303,27 +1323,25 @@ openSub = {
     },
     SearchSubtitlesByHash = {
       methodName = "SearchSubtitles",
+      apiEndpoint = "subtitles",
+      httpCommand = "GET"
       params = function()
         openSub.actionLabel = lang["action_search"]
-        setMessage(openSub.actionLabel..": "..
-          progressBarContent(0))
+        setMessage(openSub.actionLabel..": "..progressBarContent(0))
         
         return {
           { value={ string=openSub.session.token } },
           { value={
-            array={
-             data={
-              value={
-               struct={
-                member={
-                 { name="sublanguageid", value={ 
-                  string=openSub.movie.sublanguageid } 
-                  },
-                 { name="moviehash", value={ 
-                  string=openSub.file.hash } },
-                 { name="moviebytesize", value={ 
-                  double=openSub.file.bytesize } } 
-                  }}}}}}}
+            array={ data={
+              value={ struct={ member={
+                 { name="languages", value={ string=openSub.movie.sublanguageid } },
+                 { name="query", value={ string=openSub.movie.title } },
+                 { name="moviehash", value={ string=openSub.file.hash } }--,
+                 --{ name="moviebytesize", value={ 
+                 -- double=openSub.file.bytesize } } 
+              }}}
+            }}
+          }}
         }
       end,
       callback = function(resp)
@@ -1332,26 +1350,23 @@ openSub = {
     },
     SearchSubtitles = {
       methodName = "SearchSubtitles",
+      apiEndpoint = "subtitles",
+      httpCommand = "GET",
       params = function()
         openSub.actionLabel = lang["action_search"]
-        setMessage(openSub.actionLabel..": "..
-          progressBarContent(0))
+        setMessage(openSub.actionLabel..": "..progressBarContent(0))
                 
         local member = {
-             { name="sublanguageid", value={ 
-              string=openSub.movie.sublanguageid } },
-             { name="query", value={ 
-              string=openSub.movie.title } } }
-             
-        
+             { name="languages", value={ string=openSub.movie.sublanguageid } },
+             { name="query", value={ string=openSub.movie.title } }
+        }
+                     
         if openSub.movie.seasonNumber ~= nil then
-          table.insert(member, { name="season", value={ 
-            string=openSub.movie.seasonNumber } })
+          table.insert(member, { name="season_number", value={ string=openSub.movie.seasonNumber } })
         end 
         
         if openSub.movie.episodeNumber ~= nil then
-          table.insert(member, { name="episode", value={ 
-            string=openSub.movie.episodeNumber } })
+          table.insert(member, { name="episode_number", value={ string=openSub.movie.episodeNumber } })
         end 
         
         return {
@@ -1413,7 +1428,7 @@ openSub = {
       file.ext = nil;
       file.uri = nil;
     else
-      vlc.msg.dbg("[VLSub] Video URI: "..item:uri())
+      vlc.msg.dbg("[VLC-OpenSubtitles] Video URI: "..item:uri())
       local parsed_uri = vlc.net.url_parse(item:uri())
       file.uri = item:uri()
       file.protocol = parsed_uri["protocol"]
@@ -1476,7 +1491,7 @@ openSub = {
       file.cleanName = string.gsub(
         file.name,
         "[%._]", " ")
-      vlc.msg.dbg("[VLSub] file info "..(dump_xml(file)))
+      vlc.msg.dbg("[VLC-OpenSubtitles] file info "..(dump_xml(file)))
     end
     collectgarbage()
   end,
@@ -1558,7 +1573,7 @@ openSub = {
         
     -- Get data for hash calculation
     if openSub.file.is_archive then
-      vlc.msg.dbg("[VLSub] Read hash data from stream")
+      vlc.msg.dbg("[VLC-OpenSubtitles] Read hash data from stream")
     
       local file = vlc.stream(openSub.file.uri)
       local dataTmp1 = ""
@@ -1577,12 +1592,12 @@ openSub = {
       data_end = string.sub((dataTmp1..dataTmp2), -chunk_size)
     elseif not file_exist(openSub.file.path) 
     and openSub.file.stat then
-      vlc.msg.dbg("[VLSub] Read hash data from stream")
+      vlc.msg.dbg("[VLC-OpenSubtitles] Read hash data from stream")
       
       local file = vlc.stream(openSub.file.uri)
       
       if not file then
-        vlc.msg.dbg("[VLSub] No stream")
+        vlc.msg.dbg("[VLC-OpenSubtitles] No stream")
         return false
       end
       
@@ -1602,10 +1617,10 @@ openSub = {
         
       file = nil
     else
-      vlc.msg.dbg("[VLSub] Read hash data from file")
+      vlc.msg.dbg("[VLC-OpenSubtitles] Read hash data from file")
       local file = io.open( openSub.file.path, "rb")
       if not file then
-        vlc.msg.dbg("[VLSub] No stream")
+        vlc.msg.dbg("[VLC-OpenSubtitles] No stream")
         return false
       end
       
@@ -1642,8 +1657,8 @@ openSub = {
     
     openSub.file.bytesize = size
     openSub.file.hash = string.format("%08x%08x", hi,lo)
-    vlc.msg.dbg("[VLSub] Video hash: "..openSub.file.hash)
-    vlc.msg.dbg("[VLSub] Video bytesize: "..size)
+    vlc.msg.dbg("[VLC-OpenSubtitles] Video hash: "..openSub.file.hash)
+    vlc.msg.dbg("[VLC-OpenSubtitles] Video bytesize: "..size)
     collectgarbage()
     return true
   end,
@@ -1660,7 +1675,7 @@ openSub = {
 function searchHash()
   local sel = input_table["language"]:get_value()
   if sel == 0 then
-    openSub.movie.sublanguageid = 'all'
+    openSub.movie.sublanguageid = ''
   else
     openSub.movie.sublanguageid = openSub.conf.languages[sel][1]
   end
@@ -1676,14 +1691,12 @@ end
 
 function searchIMBD()
   openSub.movie.title = trim(input_table["title"]:get_text())
-  openSub.movie.seasonNumber = tonumber(
-    input_table["seasonNumber"]:get_text())
-  openSub.movie.episodeNumber = tonumber(
-    input_table["episodeNumber"]:get_text())
+  openSub.movie.seasonNumber = tonumber(input_table["seasonNumber"]:get_text())
+  openSub.movie.episodeNumber = tonumber(input_table["episodeNumber"]:get_text())
 
   local sel = input_table["language"]:get_value()
   if sel == 0 then
-    openSub.movie.sublanguageid = 'all'
+    openSub.movie.sublanguageid = ''
   else
     openSub.movie.sublanguageid = openSub.conf.languages[sel][1]
   end
@@ -1795,7 +1808,7 @@ function download_subtitles()
     tmp_dir, 
     item.SubFileName)
   
-  vlc.msg.dbg("[VLsub] tmpFileName: "..tmpFileName)
+  vlc.msg.dbg("[VLC-OpenSubtitles] tmpFileName: "..tmpFileName)
   
   -- Determine if the path to the video file is accessible for writing
   
@@ -1817,7 +1830,7 @@ function download_subtitles()
     end
   end
   
-  vlc.msg.dbg("[VLsub] Subtitles files: "..target)
+  vlc.msg.dbg("[VLC-OpenSubtitles] Subtitles files: "..target)
   
   -- Unzipped data into file target 
     
@@ -1837,7 +1850,7 @@ function download_subtitles()
   collectgarbage()
   
   if not os.remove(tmpFileName) then
-    vlc.msg.err("[VLsub] Unable to remove temp: "..tmpFileName)
+    vlc.msg.err("[VLC-OpenSubtitles] Unable to remove temp: "..tmpFileName)
   end
     
   -- load subtitles
@@ -1862,14 +1875,14 @@ function dump_zip(url, dir, subfileName)
   
   local tmpFileName = dir..slash..subfileName..".gz"
   if not file_touch(tmpFileName) then
-    vlc.msg.dbg("[VLsub] Cant touch:"..tmpFileName)
+    vlc.msg.dbg("[VLC-OpenSubtitles] Cant touch:"..tmpFileName)
     if openSub.conf.os == "win" then
       -- todo for windows
       return false
     else
       -- using tmp dir to download
       tmpFileName = "/tmp/"..subfileName..".gz"
-      vlc.msg.dbg("[VLsub] Fixing to:"..tmpFileName)
+      vlc.msg.dbg("[VLC-OpenSubtitles] Fixing to:"..tmpFileName)
     end
   end
   local tmpFile = assert(io.open(tmpFileName, "wb"))
@@ -1886,7 +1899,7 @@ end
 function add_sub(subPath)
   if vlc.item or vlc.input.item() then
     subPath = decode_uri(subPath)
-    vlc.msg.dbg("[VLsub] Adding subtitle :" .. subPath)
+    vlc.msg.dbg("[VLC-OpenSubtitles] Adding subtitle :" .. subPath)
     vlc.var.set(vlc.object.input(), 'sub-file', subPath)
     return vlc.input.add_subtitle(subPath)
   end
@@ -1946,7 +1959,7 @@ function get(url)
   if status == 200 then 
     return response
   else
-    vlc.msg.err("[VLSub] HTTP "..tostring(status).." : "..response)
+    vlc.msg.err("[VLC-OpenSubtitles] HTTP "..tostring(status).." : "..response)
     return false
   end
 end
@@ -2076,7 +2089,126 @@ function parse_url(url)
     url_parsed["path"],
     url_parsed["option"]
 end
+            --[[ JSON utils ]] --
 
+function parse_json(jsonString)
+  local function parseValue(value)
+      if value == "null" then
+          return nil
+      elseif value == "true" then
+          return true
+      elseif value == "false" then
+          return false
+      elseif tonumber(value) then
+          return tonumber(value)
+      else
+          return value:sub(2, -2)
+      end
+  end
+
+  local function parseObject(json)
+      local object = {}
+      local key, value, pos = nil, nil, 1
+
+      while pos <= #json do
+          local char = json:sub(pos, pos)
+          if char == '"' then
+              local startPos = pos + 1
+              local endPos = json:find('"', startPos)
+              key = json:sub(startPos, endPos - 1)
+              pos = endPos + 1
+          elseif char == ':' then
+              local startPos = pos + 1
+              value, pos = parseValue(json:sub(startPos))
+              object[key] = value
+          elseif char == ',' then
+              pos = pos + 1
+          elseif char == '}' then
+              pos = pos + 1
+              break
+          else
+              pos = pos + 1
+          end
+      end
+
+      return object, pos
+  end
+
+  local function parseArray(json)
+      local array = {}
+      local value, pos = nil, 1
+
+      while pos <= #json do
+          local char = json:sub(pos, pos)
+          if char == '[' then
+              value, pos = parseArray(json:sub(pos + 1))
+              table.insert(array, value)
+          elseif char == '{' then
+              value, pos = parseObject(json:sub(pos + 1))
+              table.insert(array, value)
+          elseif char == ',' then
+              pos = pos + 1
+          elseif char == ']' then
+              pos = pos + 1
+              break
+          else
+              local startPos = pos
+              local endPos = json:find(',', startPos)
+              if not endPos then
+                  endPos = json:find(']', startPos)
+              end
+              value = json:sub(startPos, endPos - 1)
+              table.insert(array, parseValue(value))
+              pos = endPos + 1
+          end
+      end
+
+      return array, pos
+  end
+
+  local function parse(json)
+      local char = json:sub(1, 1)
+      if char == '{' then
+          return parseObject(json:sub(2))
+      elseif char == '[' then
+          return parseArray(json:sub(2))
+      else
+          return parseValue(json)
+      end
+  end
+
+  return parse(jsonString)
+end
+
+function dump_json(data)
+  local jsonStr = "{"
+  local isFirst = true
+
+  for key, value in pairs(data) do
+      if not isFirst then
+          jsonStr = jsonStr .. ","
+      end
+
+      if type(key) == "string" then
+          jsonStr = jsonStr .. '"' .. key .. '":'
+      else
+          jsonStr = jsonStr .. key .. ":"
+      end
+
+      if type(value) == "table" then
+          jsonStr = jsonStr .. dump_json(value)
+      elseif type(value) == "string" then
+          jsonStr = jsonStr .. '"' .. value .. '"'
+      else
+          jsonStr = jsonStr .. tostring(value)
+      end
+
+      isFirst = false
+  end
+
+  jsonStr = jsonStr .. "}"
+  return jsonStr
+end         
             --[[ XML utils]]--
 
 function parse_xml(data)
